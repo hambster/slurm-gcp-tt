@@ -41,15 +41,15 @@ locals {
       network_ip               = x.network_ip
       on_host_maintenance      = x.on_host_maintenance
       preemptible              = x.preemptible
-      service_account          = module.slurm_sa_iam["controller"].service_account
+      service_account          = x.service_account
       shielded_instance_config = x.shielded_instance_config
       region                   = x.region
       source_image_family      = x.source_image_family
       source_image_project     = x.source_image_project
       source_image             = x.source_image
       static_ip                = x.static_ip
-      subnetwork_project       = null
-      subnetwork               = module.slurm_network.network.network_name
+      subnetwork_project       = x.subnetwork_project
+      subnetwork               = x.subnetwork
       tags                     = x.tags
       zone                     = x.zone
     }
@@ -79,15 +79,15 @@ locals {
       num_instances            = x.num_instances
       on_host_maintenance      = x.on_host_maintenance
       preemptible              = x.preemptible
-      service_account          = module.slurm_sa_iam["login"].service_account
+      service_account          = x.service_account
       shielded_instance_config = x.shielded_instance_config
       region                   = x.region
       source_image_family      = x.source_image_family
       source_image_project     = x.source_image_project
       source_image             = x.source_image
       static_ips               = x.static_ips
-      subnetwork_project       = null
-      subnetwork               = module.slurm_network.network.network_name
+      subnetwork_project       = x.subnetwork_project
+      subnetwork               = x.subnetwork
       tags                     = x.tags
       zone                     = x.zone
     }
@@ -126,7 +126,7 @@ locals {
         node_conf                = n.node_conf
         on_host_maintenance      = n.on_host_maintenance
         preemptible              = n.preemptible
-        service_account          = module.slurm_sa_iam["compute"].service_account
+        service_account          = n.service_account
         shielded_instance_config = n.shielded_instance_config
         spot_instance_config     = n.spot_instance_config
         source_image_family      = n.source_image_family
@@ -135,8 +135,8 @@ locals {
         tags                     = n.tags
       }]
       region             = x.region
-      subnetwork_project = null
-      subnetwork         = module.slurm_network.network.network_name
+      subnetwork_project = x.subnetwork_project
+      subnetwork         = x.subnetwork
       zone_policy_allow  = x.zone_policy_allow
       zone_policy_deny   = x.zone_policy_deny
     }
@@ -146,13 +146,13 @@ locals {
     no_comma_params = false
   })
 
-  network_name = "${var.slurm_cluster_name}-default"
-
-  subnets = [for s in var.subnets : merge(s, {
-    subnet_name           = local.network_name
-    subnet_region         = lookup(s, "subnet_region", var.region)
-    subnet_private_access = true
-  })]
+#  network_name = "${var.slurm_cluster_name}-default"
+#
+#  subnets = [for s in var.subnets : merge(s, {
+#    subnet_name           = local.network_name
+#    subnet_region         = lookup(s, "subnet_region", var.region)
+#    subnet_private_access = true
+#  })]
 }
 
 ############
@@ -168,76 +168,80 @@ provider "google" {
 # Google API #
 ##############
 
-module "project_services" {
-  source  = "terraform-google-modules/project-factory/google//modules/project_services"
-  version = "~> 12.0"
-
-  project_id = var.project_id
-
-  activate_apis = [
-    "compute.googleapis.com",
-    "iam.googleapis.com",
-  ]
-
-  enable_apis                 = true
-  disable_services_on_destroy = false
-}
+# @Wayne: skip
+#module "project_services" {
+#  source  = "terraform-google-modules/project-factory/google//modules/project_services"
+#  version = "~> 12.0"
+#
+#  project_id = var.project_id
+#
+#  activate_apis = [
+#    "compute.googleapis.com",
+#    "iam.googleapis.com",
+#  ]
+#
+#  enable_apis                 = true
+#  disable_services_on_destroy = false
+#}
 
 ###########
 # NETWORK #
 ###########
 
-module "slurm_network" {
-  source = "../../../../../_network"
-
-  auto_create_subnetworks = false
-  mtu                     = var.mtu
-  network_name            = local.network_name
-  project_id              = var.project_id
-
-  subnets = local.subnets
-
-  depends_on = [
-    # Ensure services are enabled
-    module.project_services,
-  ]
-}
+# @Wayne: Skip network creation
+# module "slurm_network" {
+#  source = "../../../../../_network"
+#
+#  auto_create_subnetworks = false
+#  mtu                     = var.mtu
+#  network_name            = local.network_name
+#  project_id              = var.project_id
+#
+#  subnets = local.subnets
+#
+#  depends_on = [
+#    # Ensure services are enabled
+#    module.project_services,
+#  ]
+# }
 
 ##################
 # FIREWALL RULES #
 ##################
 
-module "slurm_firewall_rules" {
-  source = "../../../../../slurm_firewall_rules"
-
-  slurm_cluster_name = var.slurm_cluster_name
-  network_name       = module.slurm_network.network.network_self_link
-  project_id         = var.project_id
-
-  depends_on = [
-    # Ensure services are enabled
-    module.project_services,
-  ]
-}
+# @Wayne: skip firewall rules
+# module "slurm_firewall_rules" {
+#  source = "../../../../../slurm_firewall_rules"
+#
+#  slurm_cluster_name = var.slurm_cluster_name
+#  network_name       = module.slurm_network.network.network_self_link
+#  project_id         = var.project_id
+#
+#  depends_on = [
+#    # Ensure services are enabled
+#    module.project_services,
+#  ]
+# }
 
 ##########################
 # SERVICE ACCOUNTS & IAM #
 ##########################
 
-module "slurm_sa_iam" {
-  source = "../../../../../slurm_sa_iam"
-
-  for_each = toset(["controller", "login", "compute"])
-
-  account_type       = each.value
-  slurm_cluster_name = var.slurm_cluster_name
-  project_id         = var.project_id
-
-  depends_on = [
-    # Ensure services are enabled
-    module.project_services,
-  ]
-}
+# @Wayne: skip IAM & SA creation
+# module "slurm_sa_iam" {
+#  source = "../../../../../slurm_sa_iam"
+#
+#  for_each = toset(["controller", "login", "compute"])
+#
+#  account_type       = each.value
+#  slurm_cluster_name = var.slurm_cluster_name
+#  project_id         = var.project_id
+#
+#  depends_on = [
+#    # Ensure services are enabled
+#    module.project_services,
+#  ]
+# }
 
 #################
 # SLURM CLUSTER #
@@ -271,8 +275,8 @@ module "slurm_cluster" {
 
   depends_on = [
     # Ensure services are enabled
-    module.project_services,
+    #module.project_services,
     # Guarantee the network is created before slurm cluster
-    module.slurm_network,
+    # module.slurm_network,
   ]
 }

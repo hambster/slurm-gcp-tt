@@ -111,6 +111,7 @@ module "slurm_controller_instance" {
   region             = var.controller_instance_config.region
   slurm_cluster_name = var.slurm_cluster_name
   static_ips         = var.controller_instance_config.static_ip != null ? [var.controller_instance_config.static_ip] : []
+  subnetwork_project = var.controller_instance_config.subnetwork_project
   subnetwork         = var.controller_instance_config.subnetwork
   zone               = var.controller_instance_config.zone
 
@@ -227,6 +228,7 @@ module "slurm_login_instance" {
   region                = each.value.region
   slurm_cluster_name    = var.slurm_cluster_name
   static_ips            = each.value.static_ips
+  subnetwork_project    = each.value.subnetwork_project
   subnetwork            = each.value.subnetwork
   zone                  = each.value.zone
 

@@ -18,11 +18,11 @@
 # GENERAL #
 ###########
 
-project_id = "<PROJECT_ID>"
+project_id = "wayne-eda-demo-service"
 
-slurm_cluster_name = "full"
+slurm_cluster_name = "depa"
 
-region = "us-central1"
+region = "asia-east1"
 
 # *NOT* intended for production use
 # enable_devel = true
@@ -36,12 +36,13 @@ enable_reconfigure           = false
 # NETWORK #
 ###########
 
-subnets = [
-  {
-    subnet_ip     = "10.0.0.0/24"
-    subnet_region = "us-central1"
-  },
-]
+# @Wayne: Skip subnet creation
+#subnets = [
+#  {
+#    subnet_ip     = "10.0.0.0/24"
+#    subnet_region = "us-central1"
+#  },
+#]
 
 mtu = 0
 
@@ -144,6 +145,9 @@ epilog_scripts = [
 ##############
 
 controller_instance_config = {
+  subnetwork_project = "way-eda-demo-host"
+  subnetwork = "dep-a"
+  service_account = {email: "hpcdemo-controller@wayne-eda-demo-service.iam.gserviceaccount.com", scopes: ["https://www.googleapis.com/auth/cloud-platform"]}
   # Template By Definition
   additional_disks = [
     # {
@@ -187,8 +191,8 @@ controller_instance_config = {
     enable_secure_boot          = true
     enable_vtpm                 = true
   }
-  source_image_family  = null
-  source_image_project = null
+  source_image_family  = "schedmd-v5-slurm-22-05-2-hpc-centos-7-1658434720-2"
+  source_image_project = "projects/wayne-eda-demo-service/global/images"
   source_image         = null
   tags = [
     # "tag0",
@@ -207,7 +211,7 @@ controller_instance_config = {
   ]
   network_ip = null
   static_ip  = null
-  zone       = "us-central1-a"
+  zone       = "asia-east1-a"
 }
 
 #########
@@ -238,8 +242,8 @@ login_nodes = [
     on_host_maintenance      = null
     preemptible              = false
     shielded_instance_config = null
-    source_image_family      = null
-    source_image_project     = null
+    source_image_family  = "schedmd-v5-slurm-22-05-2-hpc-centos-7-1658434720-2"
+    source_image_project = "projects/wayne-eda-demo-service/global/images"
     source_image             = null
     tags                     = []
 
@@ -251,8 +255,11 @@ login_nodes = [
     network_ips   = []
     num_instances = 1
     static_ips    = []
-    region        = null
-    zone          = null
+    region        = "asia-east1"
+    zone          = "asia-east1-a"
+    subnetwork_project = "way-eda-demo-host"
+    subnetwork = "dep-a"
+    service_account = {email: "hpcdemo-head@wayne-eda-demo-service.iam.gserviceaccount.com", scopes: ["https://www.googleapis.com/auth/cloud-platform"]}
   },
 ]
 
@@ -284,6 +291,7 @@ partitions = [
       {
         # Group Definition
         group_name             = "test"
+        service_account = {email: "hpcdemo-compute@wayne-eda-demo-service.iam.gserviceaccount.com", scopes: ["https://www.googleapis.com/auth/cloud-platform"]}
         node_count_dynamic_max = 20
         node_count_static      = 0
         node_conf = {
@@ -309,8 +317,8 @@ partitions = [
         on_host_maintenance      = null
         preemptible              = false
         shielded_instance_config = null
-        source_image_family      = null
-        source_image_project     = null
+        source_image_family  = "schedmd-v5-slurm-22-05-2-hpc-centos-7-1658434720-2"
+        source_image_project = "projects/wayne-eda-demo-service/global/images"
         source_image             = null
         tags                     = []
 
@@ -325,7 +333,9 @@ partitions = [
         }
       },
     ]
-    region            = null
+    region             = "asia-east1"
+    subnetwork_project = "way-eda-demo-host"
+    subnetwork = "dep-a"
     zone_policy_allow = []
     zone_policy_deny  = []
   },
@@ -344,6 +354,7 @@ partitions = [
       {
         # Group Definition
         group_name             = "test"
+        service_account = {email: "hpcdemo-compute@wayne-eda-demo-service.iam.gserviceaccount.com", scopes: ["https://www.googleapis.com/auth/cloud-platform"]}
         node_count_dynamic_max = 10
         node_count_static      = 0
         node_conf              = {}
@@ -370,8 +381,8 @@ partitions = [
         on_host_maintenance      = null
         preemptible              = false
         shielded_instance_config = null
-        source_image_family      = null
-        source_image_project     = null
+        source_image_family  = "schedmd-v5-slurm-22-05-2-hpc-centos-7-1658434720-2"
+        source_image_project = "projects/wayne-eda-demo-service/global/images"
         source_image             = null
         tags                     = []
 
@@ -389,5 +400,7 @@ partitions = [
     region            = null
     zone_policy_allow = []
     zone_policy_deny  = []
+    subnetwork_project = "way-eda-demo-host"
+    subnetwork = "dep-a"
   },
 ]
