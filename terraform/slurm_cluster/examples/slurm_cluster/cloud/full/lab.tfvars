@@ -290,7 +290,7 @@ partitions = [
     partition_nodes = [
       {
         # Group Definition
-        group_name             = "test"
+        group_name             = "degug"
         service_account = {email: "hpcdemo-compute@wayne-eda-demo-service.iam.gserviceaccount.com", scopes: ["https://www.googleapis.com/auth/cloud-platform"]}
         node_count_dynamic_max = 20
         node_count_static      = 0
@@ -311,7 +311,7 @@ partitions = [
         enable_shielded_vm       = false
         gpu                      = null
         labels                   = {}
-        machine_type             = "c2-standard-4"
+        machine_type             = "n1-standard-4"
         metadata                 = {}
         min_cpu_platform         = null
         on_host_maintenance      = null
@@ -353,7 +353,7 @@ partitions = [
     partition_nodes = [
       {
         # Group Definition
-        group_name             = "test"
+        group_name             = "debug2"
         service_account = {email: "hpcdemo-compute@wayne-eda-demo-service.iam.gserviceaccount.com", scopes: ["https://www.googleapis.com/auth/cloud-platform"]}
         node_count_dynamic_max = 10
         node_count_static      = 0
@@ -370,10 +370,11 @@ partitions = [
         enable_confidential_vm = false
         enable_oslogin         = true
         enable_shielded_vm     = false
-        gpu = {
-          count = 1
-          type  = "nvidia-tesla-v100"
-        }
+        gpu                    = null
+        #gpu = {
+        #  count = 1
+        #  type  = "nvidia-tesla-v100"
+        #}
         labels                   = {}
         machine_type             = "n1-standard-4"
         metadata                 = {}
