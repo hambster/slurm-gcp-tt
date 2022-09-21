@@ -59,22 +59,22 @@ mtu = 0
 
 # Network storage
 network_storage = [
-  # {
-  #   server_ip     = "<storage host>"
-  #   remote_mount  = "/home"
-  #   local_mount   = "/home"
-  #   fs_type       = "nfs"
-  #   mount_options = null
-  # },
+   {
+     server_ip     = "192.168.1.15"
+     remote_mount  = "/storage"
+     local_mount   = "/shared"
+     fs_type       = "nfs"
+     mount_options = null
+   },
 ]
 login_network_storage = [
-  # {
-  #   server_ip     = "<storage host>"
-  #   remote_mount  = "/net_storage"
-  #   local_mount   = "/shared"
-  #   fs_type       = "nfs"
-  #   mount_options = null
-  # },
+   {
+     server_ip     = "192.168.250.2"
+     remote_mount  = "/home"
+     local_mount   = "/tools"
+     fs_type       = "nfs"
+     mount_options = null
+   },
 ]
 
 # Slurm config
@@ -324,7 +324,7 @@ partitions = [
           enable_integrity_monitoring = true
           enable_secure_boot          = true
           enable_vtpm                 = true
-        }
+    	}
         source_image_family  = "schedmd-v5-slurm-22-05-2-hpc-centos-7-1658434720-2"
         source_image_project = "projects/wayne-eda-demo-service/global/images"
         source_image             = null
