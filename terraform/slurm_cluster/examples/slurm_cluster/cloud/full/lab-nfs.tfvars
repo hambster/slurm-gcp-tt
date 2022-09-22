@@ -60,18 +60,18 @@ mtu = 0
 # Network storage
 network_storage = [
    {
-     server_ip     = "192.168.1.15"
-     remote_mount  = "/storage"
-     local_mount   = "/shared"
+     server_ip     = "192.168.250.2"
+     remote_mount  = "/nfs_home"
+     local_mount   = "/home"
      fs_type       = "nfs"
      mount_options = null
    },
 ]
 login_network_storage = [
    {
-     server_ip     = "192.168.250.2"
-     remote_mount  = "/home"
-     local_mount   = "/tools"
+     server_ip     = "192.168.1.15"
+     remote_mount  = "/storage"
+     local_mount   = "/shared"
      fs_type       = "nfs"
      mount_options = null
    },
