@@ -229,6 +229,72 @@ variable "login_nodes" {
   default = []
 }
 
+###########
+# LICENSE #
+###########
+
+variable "license_nodes" {
+  description = "List of slurm license instance definitions."
+  type = list(object({
+    access_config = list(object({
+      nat_ip       = string
+      network_tier = string
+    }))
+    additional_disks = list(object({
+      disk_name    = string
+      device_name  = string
+      disk_size_gb = number
+      disk_type    = string
+      disk_labels  = map(string)
+      auto_delete  = bool
+      boot         = bool
+    }))
+    can_ip_forward         = bool
+    disable_smt            = bool
+    disk_auto_delete       = bool
+    disk_labels            = map(string)
+    disk_size_gb           = number
+    disk_type              = string
+    enable_confidential_vm = bool
+    enable_oslogin         = bool
+    enable_shielded_vm     = bool
+    gpu = object({
+      count = number
+      type  = string
+    })
+    group_name          = string
+    instance_template   = string
+    labels              = map(string)
+    machine_type        = string
+    metadata            = map(string)
+    min_cpu_platform    = string
+    network_ips         = list(string)
+    num_instances       = number
+    on_host_maintenance = string
+    preemptible         = bool
+    region              = string
+    service_account = object({
+      email  = string
+      scopes = list(string)
+    })
+    shielded_instance_config = object({
+      enable_integrity_monitoring = bool
+      enable_secure_boot          = bool
+      enable_vtpm                 = bool
+    })
+    source_image_family  = string
+    source_image_project = string
+    source_image         = string
+    static_ips           = list(string)
+    subnetwork_project   = string
+    subnetwork           = string
+    tags                 = list(string)
+    zone                 = string
+  }))
+  default = []
+}
+
+
 #############
 # PARTITION #
 #############
@@ -539,6 +605,15 @@ variable "controller_startup_scripts" {
 
 variable "login_startup_scripts" {
   description = "List of scripts to be ran on login VM startup."
+  type = list(object({
+    filename = string
+    content  = string
+  }))
+  default = []
+}
+
+variable "license_startup_scripts" {
+  description = "List of scripts to be ran on license VM startup."
   type = list(object({
     filename = string
     content  = string

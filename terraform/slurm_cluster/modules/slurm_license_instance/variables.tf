@@ -1,12 +1,11 @@
 /**
  * Copyright (C) SchedMD LLC.
- * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,39 +20,46 @@ variable "project_id" {
   default     = null
 }
 
+###########
+# NETWORK #
+###########
+
 variable "network" {
-  description = "Network to deploy to. Only one of network or subnetwork should be specified."
   type        = string
+  description = "Network to deploy to. Only one of network or subnetwork should be specified."
   default     = ""
 }
 
 variable "subnetwork" {
-  description = "Subnet to deploy to. Only one of network or subnetwork should be specified."
   type        = string
+  description = "Subnet to deploy to. Only one of network or subnetwork should be specified."
   default     = ""
 }
 
 variable "subnetwork_project" {
-  description = "The project that subnetwork belongs to"
   type        = string
+  description = "The project that subnetwork belongs to."
   default     = ""
 }
 
-variable "hostname" {
-  description = "Hostname of instances"
+variable "region" {
   type        = string
-  default     = ""
+  description = "Region where the instances should be created."
+  default     = null
 }
 
-variable "add_hostname_suffix" {
-  description = "Adds a suffix to the hostname"
-  type        = bool
-  default     = true
+############
+# INSTANCE #
+############
+
+variable "instance_template" {
+  type        = string
+  description = "Instance template self_link used to create compute instances."
 }
 
 variable "static_ips" {
-  description = "List of static IPs for VM instances"
   type        = list(string)
+  description = "List of static IPs for VM instances."
   default     = []
 }
 
@@ -66,33 +72,28 @@ variable "access_config" {
   default = []
 }
 
+variable "license_startup_scripts" {
+  description = "List of scripts to be ran on license VM startup."
+  type = list(object({
+    filename = string
+    content  = string
+  }))
+  default = []
+}
+
 variable "num_instances" {
-  description = "Number of instances to create. This value is ignored if static_ips is provided."
   type        = number
+  description = "Number of instances to create. This value is ignored if static_ips is provided."
   default     = 1
 }
 
-variable "instance_template" {
-  description = "Instance template self_link used to create compute instances"
-  type        = string
-}
-
-variable "region" {
-  description = "Region where the instances should be created."
-  type        = string
-  default     = null
-}
-
 variable "zone" {
-  description = "Zone where the instances should be created. If not specified, instances will be spread across available zones in the region."
   type        = string
+  description = <<EOD
+Zone where the instances should be created. If not specified, instances will be
+spread across available zones in the region.
+EOD
   default     = null
-}
-
-variable "hostname_suffix_separator" {
-  description = "Separator character to compose hostname when add_hostname_suffix is set to true."
-  type        = string
-  default     = "-"
 }
 
 variable "metadata" {
@@ -105,20 +106,14 @@ variable "metadata" {
 # SLURM #
 #########
 
-variable "slurm_instance_role" {
-  description = "Slurm instance type. Must be one of: controller; login; compute."
+variable "slurm_cluster_name" {
   type        = string
-  default     = null
+  description = "Cluster name, used for resource naming."
 
   validation {
-    condition     = contains(["controller", "login", "compute", "license"], lower(var.slurm_instance_role))
-    error_message = "Must be one of: controller; login; compute."
+    condition     = can(regex("^[a-z](?:[a-z0-9]{0,9})$", var.slurm_cluster_name))
+    error_message = "Variable 'slurm_cluster_name' must be a match of regex '^[a-z](?:[a-z0-9]{0,9})$'."
   }
-}
-
-variable "slurm_cluster_name" {
-  description = "Cluster name, used for resource naming."
-  type        = string
 }
 
 variable "slurm_depends_on" {

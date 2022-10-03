@@ -247,6 +247,16 @@ variable "login_startup_scripts" {
   default = []
 }
 
+variable "license_startup_scripts" {
+  description = "List of scripts to be ran on license VM startup."
+  type = list(object({
+    filename = string
+    content  = string
+  }))
+  default = []
+}
+
+
 variable "compute_startup_scripts" {
   description = "List of scripts to be ran on compute VM startup."
   type = list(object({
@@ -394,6 +404,74 @@ List of slurm login instances.
 Variables map to:
 - [slurm_instance_template](../../../../modules/slurm_instance_template/README_TF.md#inputs)
 - [slurm_login_instance](../../../../modules/slurm_login_instance/README_TF.md#inputs)
+EOD
+  type = list(object({
+    access_config = list(object({
+      nat_ip       = string
+      network_tier = string
+    }))
+    additional_disks = list(object({
+      disk_name    = string
+      device_name  = string
+      disk_size_gb = number
+      disk_type    = string
+      disk_labels  = map(string)
+      auto_delete  = bool
+      boot         = bool
+    }))
+    can_ip_forward         = bool
+    disable_smt            = bool
+    disk_auto_delete       = bool
+    disk_labels            = map(string)
+    disk_size_gb           = number
+    disk_type              = string
+    enable_confidential_vm = bool
+    enable_oslogin         = bool
+    enable_shielded_vm     = bool
+    gpu = object({
+      count = number
+      type  = string
+    })
+    group_name          = string
+    instance_template   = string
+    labels              = map(string)
+    machine_type        = string
+    metadata            = map(string)
+    min_cpu_platform    = string
+    network_ips         = list(string)
+    num_instances       = number
+    on_host_maintenance = string
+    preemptible         = bool
+    region              = string
+    shielded_instance_config = object({
+      enable_integrity_monitoring = bool
+      enable_secure_boot          = bool
+      enable_vtpm                 = bool
+    })
+    source_image_family  = string
+    source_image_project = string
+    source_image         = string
+    static_ips           = list(string)
+    tags                 = list(string)
+    zone                 = string
+    service_account      = object({email = string, scopes = list(string)})
+    subnetwork_project   = string
+    subnetwork           = string
+  }))
+  default = []
+}
+
+###########
+# LICENSE #
+###########
+
+variable "license_nodes" {
+  description = <<EOD
+List of slurm license instances.
+
+Variables map to:
+- [slurm_instance_template](../../../../modules/slurm_instance_template/README_TF.md#inputs)
+- [slurm_license_instance](../../../../modules/slurm_license_instance/README_TF.md#inputs)
 EOD
   type = list(object({
     access_config = list(object({

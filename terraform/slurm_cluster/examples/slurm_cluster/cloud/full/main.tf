@@ -93,6 +93,45 @@ locals {
     }
   ]
 
+  license_nodes = [
+    for x in var.license_nodes : {
+      access_config            = x.access_config
+      additional_disks         = x.additional_disks
+      can_ip_forward           = x.can_ip_forward
+      disable_smt              = x.disable_smt
+      disk_auto_delete         = x.disk_auto_delete
+      disk_labels              = x.disk_labels
+      disk_size_gb             = x.disk_size_gb
+      disk_type                = x.disk_type
+      enable_confidential_vm   = x.enable_confidential_vm
+      enable_oslogin           = x.enable_oslogin
+      enable_shielded_vm       = x.enable_shielded_vm
+      gpu                      = x.gpu
+      group_name               = x.group_name
+      instance_template        = x.instance_template
+      labels                   = x.labels
+      machine_type             = x.machine_type
+      metadata                 = x.metadata
+      min_cpu_platform         = x.min_cpu_platform
+      network_ips              = x.network_ips
+      num_instances            = x.num_instances
+      on_host_maintenance      = x.on_host_maintenance
+      preemptible              = x.preemptible
+      service_account          = x.service_account
+      shielded_instance_config = x.shielded_instance_config
+      region                   = x.region
+      source_image_family      = x.source_image_family
+      source_image_project     = x.source_image_project
+      source_image             = x.source_image
+      static_ips               = x.static_ips
+      subnetwork_project       = x.subnetwork_project
+      subnetwork               = x.subnetwork
+      tags                     = x.tags
+      zone                     = x.zone
+    }
+  ]
+
+
   partitions = [
     for x in var.partitions : {
       enable_job_exclusive      = x.enable_job_exclusive
@@ -265,6 +304,8 @@ module "slurm_cluster" {
   login_startup_scripts      = var.login_startup_scripts
   login_network_storage      = var.login_network_storage
   login_nodes                = local.login_nodes
+  license_startup_scripts    = var.license_startup_scripts
+  license_nodes              = local.license_nodes
   disable_default_mounts     = var.disable_default_mounts
   network_storage            = var.network_storage
   partitions                 = local.partitions

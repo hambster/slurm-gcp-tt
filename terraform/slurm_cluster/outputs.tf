@@ -68,3 +68,18 @@ output "slurm_login_instance_details" {
     for k, v in module.slurm_login_instance : k => v.slurm_login_instance.instances_details[*]
   }))
 }
+
+
+output "slurm_license_instance_self_links" {
+  description = "Slurm license instance self_link."
+  value = flatten(values({
+    for k, v in module.slurm_license_instance : k => v.slurm_license_instance.instances_self_links
+  }))
+}
+
+output "slurm_license_instance_details" {
+  description = "Slurm license instance details."
+  value = flatten(values({
+    for k, v in module.slurm_license_instance : k => v.slurm_license_instance.instances_details[*]
+  }))
+}

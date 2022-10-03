@@ -237,3 +237,77 @@ module "slurm_login_instance" {
     module.slurm_controller_instance[0].slurm_controller_instances[*].instance_id,
   ])
 }
+
+#####################
+# LICENSE: TEMPLATE #
+#####################
+
+module "slurm_license_template" {
+  source = "./modules/slurm_instance_template"
+
+  for_each = {
+    for x in var.license_nodes : x.group_name => x
+    if(x.instance_template == null || x.instance_template == "")
+  }
+
+  additional_disks         = each.value.additional_disks
+  can_ip_forward           = each.value.can_ip_forward
+  disable_smt              = each.value.disable_smt
+  disk_auto_delete         = each.value.disk_auto_delete
+  disk_labels              = each.value.disk_labels
+  disk_size_gb             = each.value.disk_size_gb
+  disk_type                = each.value.disk_type
+  enable_confidential_vm   = each.value.enable_confidential_vm
+  enable_oslogin           = each.value.enable_oslogin
+  enable_shielded_vm       = each.value.enable_shielded_vm
+  gpu                      = each.value.gpu
+  labels                   = each.value.labels
+  machine_type             = each.value.machine_type
+  metadata                 = each.value.metadata
+  min_cpu_platform         = each.value.min_cpu_platform
+  on_host_maintenance      = each.value.on_host_maintenance
+  preemptible              = each.value.preemptible
+  project_id               = var.project_id
+  region                   = each.value.region
+  service_account          = each.value.service_account
+  shielded_instance_config = each.value.shielded_instance_config
+  slurm_cluster_name       = var.slurm_cluster_name
+  slurm_instance_role      = "license"
+  source_image_family      = each.value.source_image_family
+  source_image_project     = each.value.source_image_project
+  source_image             = each.value.source_image
+  subnetwork_project       = each.value.subnetwork_project
+  subnetwork               = each.value.subnetwork
+  tags                     = concat([var.slurm_cluster_name], each.value.tags)
+}
+
+#####################
+# LICENSE: INSTANCE #
+#####################
+
+module "slurm_license_instance" {
+  source = "./modules/slurm_license_instance"
+
+  for_each = { for x in var.license_nodes : x.group_name => x }
+
+  access_config = lookup(each.value, "access_config", [])
+  instance_template = (
+    each.value.instance_template != null && each.value.instance_template != ""
+    ? each.value.instance_template
+    : module.slurm_license_template[each.key].self_link
+  )
+  license_startup_scripts = var.license_startup_scripts
+  num_instances         = each.value.num_instances
+  project_id            = var.project_id
+  region                = each.value.region
+  slurm_cluster_name    = var.slurm_cluster_name
+  static_ips            = each.value.static_ips
+  subnetwork_project    = each.value.subnetwork_project
+  subnetwork            = each.value.subnetwork
+  zone                  = each.value.zone
+
+  slurm_depends_on = flatten([
+    # Ensure Controller is up before attempting to mount file systems from it
+    module.slurm_controller_instance[0].slurm_controller_instances[*].instance_id,
+  ])
+}
