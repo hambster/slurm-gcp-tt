@@ -60,8 +60,8 @@ mtu = 0
 # Network storage
 network_storage = [
    {
-     server_ip     = "192.168.250.2"
-     remote_mount  = "/nfs_home"
+     server_ip     = "192.168.1.15"
+     remote_mount  = "/nfs-home"
      local_mount   = "/home"
      fs_type       = "nfs"
      mount_options = null
@@ -179,6 +179,7 @@ controller_instance_config = {
   }
   machine_type = "n1-standard-4"
   metadata = {
+    block-project-ssh-keys = "TRUE"
     # metadata0 = "value0"
     # metadata1 = "value1"
   }
@@ -237,7 +238,9 @@ login_nodes = [
     gpu                      = null
     labels                   = {}
     machine_type             = "n1-standard-2"
-    metadata                 = {}
+    metadata                 = {
+      block-project-ssh-keys = "TRUE"
+    }
     min_cpu_platform         = null
     on_host_maintenance      = null
     preemptible              = false
@@ -316,7 +319,9 @@ partitions = [
         gpu                      = null
         labels                   = {}
         machine_type             = "n1-standard-4"
-        metadata                 = {}
+        metadata                 = {
+          block-project-ssh-keys = "TRUE"
+        }
         min_cpu_platform         = null
         on_host_maintenance      = null
         preemptible              = false
@@ -385,7 +390,9 @@ partitions = [
         #}
         labels                   = {}
         machine_type             = "n1-standard-4"
-        metadata                 = {}
+        metadata                 = {
+          block-project-ssh-keys = "TRUE"
+        }
         min_cpu_platform         = null
         on_host_maintenance      = null
         preemptible              = false
