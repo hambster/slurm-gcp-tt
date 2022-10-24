@@ -61,7 +61,7 @@ mtu = 0
 network_storage = [
    {
      server_ip     = "192.168.1.15"
-     remote_mount  = "/nfs-home"
+     remote_mount  = "/storage/nfs-home"
      local_mount   = "/home"
      fs_type       = "nfs"
      mount_options = null
@@ -70,7 +70,7 @@ network_storage = [
 login_network_storage = [
    {
      server_ip     = "192.168.1.15"
-     remote_mount  = "/storage"
+     remote_mount  = "/storage/nfs-shared"
      local_mount   = "/shared"
      fs_type       = "nfs"
      mount_options = null
@@ -189,7 +189,7 @@ controller_instance_config = {
   region              = null
   shielded_instance_config = {
     enable_integrity_monitoring = true
-    enable_secure_boot          = true
+    enable_secure_boot          = false
     enable_vtpm                 = true
   }
   source_image_family  = "schedmd-v5-slurm-22-05-2-hpc-centos-7-1658434720-2"
