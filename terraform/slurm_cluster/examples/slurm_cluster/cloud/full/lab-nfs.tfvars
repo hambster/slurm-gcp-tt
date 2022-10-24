@@ -25,7 +25,7 @@ slurm_cluster_name = "depa"
 region = "asia-east1"
 
 # *NOT* intended for production use
-# enable_devel = true
+enable_devel = true
 
 enable_bigquery_load         = false
 enable_cleanup_compute       = true
@@ -189,7 +189,7 @@ controller_instance_config = {
   region              = null
   shielded_instance_config = {
     enable_integrity_monitoring = true
-    enable_secure_boot          = false
+    enable_secure_boot          = true
     enable_vtpm                 = true
   }
   source_image_family  = "schedmd-v5-slurm-22-05-2-hpc-centos-7-1658434720-2"
@@ -318,16 +318,16 @@ partitions = [
         enable_shielded_vm       = true
         gpu                      = null
         labels                   = {}
-        machine_type             = "n1-standard-4"
+        machine_type             = "n2-standard-32"
         metadata                 = {
           block-project-ssh-keys = "TRUE"
         }
         min_cpu_platform         = null
         on_host_maintenance      = null
-        preemptible              = false
+        preemptible              = true
         shielded_instance_config = {
           enable_integrity_monitoring = true
-          enable_secure_boot          = true
+          enable_secure_boot          = false
           enable_vtpm                 = true
     	}
         source_image_family  = "schedmd-v5-slurm-22-05-2-hpc-centos-7-1658434720-2"
@@ -339,8 +339,8 @@ partitions = [
         instance_template = null
 
         # Instance Definition
-        bandwidth_tier = "platform_default"
-        enable_spot_vm = false
+        bandwidth_tier = "tier_1_enabled"
+        enable_spot_vm = true
         spot_instance_config = {
           termination_action = "STOP"
         }
@@ -389,16 +389,16 @@ partitions = [
         #  type  = "nvidia-tesla-v100"
         #}
         labels                   = {}
-        machine_type             = "n1-standard-4"
+        machine_type             = "n2-standard-32"
         metadata                 = {
           block-project-ssh-keys = "TRUE"
         }
         min_cpu_platform         = null
         on_host_maintenance      = null
-        preemptible              = false
+        preemptible              = true
         shielded_instance_config = {
           enable_integrity_monitoring = true
-          enable_secure_boot          = true
+          enable_secure_boot          = false
           enable_vtpm                 = true
         }
         source_image_family  = "schedmd-v5-slurm-22-05-2-hpc-centos-7-1658434720-2"
@@ -410,8 +410,8 @@ partitions = [
         instance_template = null
 
         # Instance Definition
-        bandwidth_tier = "platform_default"
-        enable_spot_vm = false
+        bandwidth_tier = "tier_1_enabled"
+        enable_spot_vm = true
         spot_instance_config = {
           termination_action = "STOP"
         }
